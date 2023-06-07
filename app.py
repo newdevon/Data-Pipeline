@@ -31,7 +31,7 @@ def save():
                               ,conn) 
 
     df = pd.DataFrame(sql_query)
-    df.to_csv (r'csv-files\student.csv', index = False)
+    df.to_csv (r'raw-csv-files\student.csv', index = False)
 
     sql_query = pd.read_sql_query('''
                               SELECT * FROM teacher
@@ -39,7 +39,7 @@ def save():
                               ,conn) 
 
     df = pd.DataFrame(sql_query)
-    df.to_csv (r'csv-files\teacher.csv', index = False)
+    df.to_csv (r'raw-csv-files\teacher.csv', index = False)
 
     sql_query = pd.read_sql_query('''
                               SELECT * FROM administrator
@@ -47,7 +47,7 @@ def save():
                               ,conn) 
 
     df = pd.DataFrame(sql_query)
-    df.to_csv (r'csv-files\admin.csv', index = False)
+    df.to_csv (r'raw-csv-files\admin.csv', index = False)
 
     sql_query = pd.read_sql_query('''
                               SELECT * FROM grade
@@ -55,7 +55,7 @@ def save():
                               ,conn) 
 
     df = pd.DataFrame(sql_query)
-    df.to_csv (r'csv-files\grades.csv', index = False)
+    df.to_csv (r'raw-csv-files\grades.csv', index = False)
 
     sql_query = pd.read_sql_query('''
                               SELECT * FROM class
@@ -63,7 +63,7 @@ def save():
                               ,conn) 
 
     df = pd.DataFrame(sql_query)
-    df.to_csv (r'csv-files\course.csv', index = False)
+    df.to_csv (r'raw-csv-files\course.csv', index = False)
 
     return render_template('files_saved.html')
 
