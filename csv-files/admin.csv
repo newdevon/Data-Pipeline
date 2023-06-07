@@ -1,21 +1,2 @@
-ID,Name,Email
-1,John Smith,john.smith@example.com
-2,Jane Doe,jane.doe@example.com
-3,Mary Smith,mary.smith@example.com
-4,Peter Jones,peter.jones@example.com
-5,Susan Brown,susan.brown@example.com
-6,Administrator 6,administrator6@example.com
-7,Administrator 7,administrator7@example.com
-8,Administrator 8,administrator8@example.com
-9,Administrator 9,administrator9@example.com
-10,Administrator 10,administrator10@example.com
-11,Administrator 11,administrator11@example.com
-12,Administrator 12,administrator12@example.com
-13,Administrator 13,administrator13@example.com
-14,Administrator 14,administrator14@example.com
-15,Administrator 15,administrator15@example.com
-16,Administrator 16,administrator16@example.com
-17,Administrator 17,administrator17@example.com
-18,Administrator 18,administrator18@example.com
-19,Administrator 19,administrator19@example.com
-20,Administrator 20,administrator20@example.com
+admin_id,admin_name,admin_email
+1,a,a@a.a
