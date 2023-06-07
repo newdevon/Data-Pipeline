@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Add Admin</title>
+  <title>Add Course</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -28,7 +28,7 @@
     }
 
     input[type="text"],
-    input[type="email"]{
+    [type="number"] {
       width: 100%;
       padding: 10px;
       font-size: 16px;
@@ -58,24 +58,25 @@
   </style>
 </head>
 <body>
-  <h1>Add Admin</h1>
+  <h1>Add Course</h1>
   
-  <form method="POST" action="/admins/added">
+  <form method="POST" action="/courses/added">
     <br>
-    <label for="admin_name">Admin Name:</label>
-    <input type="text" name="admin_name" id="admin_name" required>
-    <label for="admin_email">Admin E-Mail:</label>
-    <input type="email" name="admin_email" id="admin_email" required>
+    <label for="teacher_id">Teacher ID:</label>
+    <input type="number" name="teacher_id" id="teacher_id" required>
+    <label for="class_name">Class Name:</label>
+    <input type="text" name="class_name" id="class_name" required>
+    <label for="class_subject">Class Subject:</label>
+    <input type="text" name="class_subject" id="class_subject" required>
     
     <!-- Add a hidden input field for the success message -->
-    <input type="hidden" name="success_message" value="Admin created successfully!">
+    <input type="hidden" name="success_message" value="Class created successfully!">
 
     <!-- Submit button -->
-    <input type="submit" value="Add Admin">
-
+    <input type="submit" value="Add Class">
 
     <br>
-    <a href="/admins">Back</a>
+    <a href="/courses">Back</a>
     
   </form>
 </body>
