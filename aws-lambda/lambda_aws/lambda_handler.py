@@ -1,6 +1,6 @@
 import boto3
 import pymysql
-from .. import config
+import csv
 
 s3_cient = boto3.client('s3')
 
@@ -13,13 +13,20 @@ def read_data_from_s3(event):
 
     data = resp['Body'].read().decode('utf-8')
     data = data.split("\n")
-    return data
+
+    results = []
+    for i in range(1, len(data)):
+        row = data[i].split(',')
+        results.append(row)
+
+    print("----- Returning Parsed Data! -----")
+    return (results, s3_file_name)
 
 def lambda_handler(event, context):
-    rds_endpoint  = config.rds_endpoint
-    username = config.username
-    password = config.password # RDS Mysql password
-    db_name = config.db_name # RDS MySQL DB name
+    rds_endpoint  = "sms-db.cgu7tdjenxsr.us-east-2.rds.amazonaws.com"
+    username = "admin"
+    password = "mr15etQsxFxCZauiwjZF" # RDS Mysql password
+    db_name = "school" # RDS MySQL DB name
     connection = None
     try:
         connection = pymysql.connect(host=rds_endpoint, user=username, passwd=password, db=db_name, connect_timeout=5)
@@ -27,48 +34,35 @@ def lambda_handler(event, context):
         print("ERROR: Unexpected error: Could not connect to MySQL instance.")
 
 
-    # tables_insert = {
-    #     'student.csv': 'INSERT INTO student (empid, empname, empaddress) VALUES (%s, %s, %s)',
-    #     'teacher.csv': 'INSERT INTO teacher (empid, empname, empaddress) VALUES (%s, %s, %s)',
-    #     'course.csv': 'INSERT INTO course (empid, empname, empaddress) VALUES (%s, %s, %s)',
-    #     'grade.csv': 'INSERT INTO grade (empid, empname, empaddress) VALUES (%s, %s, %s)',
-    #     'admin.csv': 'INSERT INTO admin (empid, empname, empaddress) VALUES (%s, %s, %s)'
-    # }
+    # Lambda Function is called for every file uploaded
+    insert_dict = {
+        'student.csv': 'INSERT INTO student (id, name, email) VALUES (%s, %s, %s)',
+        'teacher.csv': 'INSERT INTO teacher (id, name, email) VALUES (%s, %s, %s)',
+        'admin.csv': 'INSERT INTO admin (id, name, email) VALUES (%s, %s, %s)',
+        'course.csv': 'INSERT INTO course (id, name, subject, teacher_id) VALUES (%s, %s, %s, %s)',
+        'grade.csv': 'INSERT INTO grade (id, student_id, course_id, num_val) VALUES (%s, %s, %s, %s)'
+    }
 
+    with connection.cursor() as cursor:
+        try:
+            results, csv_file_name = read_data_from_s3(event)
+            print(f"S3 Bucket and File Read: {csv_file_name}")
 
-
-    try:
-        cursor = connection.cursor()
-
-        sql_script1 = "DROP TABLE IF EXISTS teacher;" 
-        cursor.execute(sql_script1)
-        connection.commit() #commit the execution
-
-        sql_script2 = "CREATE TABLE teacher (id SERIAL PRIMARY KEY, name varchar(50), email varchar(50));"
-        cursor.execute(sql_script2)
-        connection.commit() #commit the execution
-        print("Created 'teacher' Table")
-        
-    except Exception as e:
-        print(e)
-
-    data = read_data_from_s3(event)
-
-    with connection.cursor() as cur:
-        for person in data: # Iterate over S3 csv file content and insert into MySQL database
-            try:
-                person = person.replace("\n","").split(",")
-                #print(person)
-                #print (">>>>>>>"+str(person))
-                cur.execute('INSERT INTO teacher (name, email) VALUES ("'+str(person[1])+'", "'+str(person[2])+'")')
+            if csv_file_name in insert_dict:
+                insert_query = insert_dict[csv_file_name]
+                cursor.executemany(insert_query, results)
                 connection.commit()
-                #print("inserted record")
-            except Exception as e:
-                print(e)
-                continue
-        cur.execute("select * from teacher")
-        # Display teacher table records
-        # for row in cur:
-        #     print (row)
-    if connection:
+                print(cursor.rowcount, f"Record inserted successfully from {csv_file_name} file")
+
+        except Exception as e:
+            print(e)
+
+
+    #     # Display teacher table records
+    #     # for row in cur:
+    #     #     print (row)
+    if connection: #commit the execution
         connection.commit()
+        print("Committing...")
+
+    

@@ -23,9 +23,9 @@ def lambda_handler(event, context):
     tables_dict = {
         'student': 'INSERT INTO table1 (empid, empname, empaddress) VALUES (%s, %s, %s)',
         'teacher': 'INSERT INTO table2 (empid, empname, empaddress) VALUES (%s, %s, %s)',
+        'admin': 'INSERT INTO table5 (empid, empname, empaddress) VALUES (%s, %s, %s)',
         'course': 'INSERT INTO table3 (empid, empname, empaddress) VALUES (%s, %s, %s)',
-        'grade': 'INSERT INTO table4 (empid, empname, empaddress) VALUES (%s, %s, %s)',
-        'admin': 'INSERT INTO table5 (empid, empname, empaddress) VALUES (%s, %s, %s)'
+        'grade': 'INSERT INTO table4 (empid, empname, empaddress) VALUES (%s, %s, %s)'
     }
     if csv_file in tables_dict:
         mysql_empsql_insert_query = tables_dict[csv_file]
