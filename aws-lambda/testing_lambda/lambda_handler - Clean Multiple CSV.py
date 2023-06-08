@@ -67,14 +67,9 @@ def lambda_handler(event, context):
 
             if csv_file_name in insert_dict:
                 insert_query = insert_dict[csv_file_name]
-                # Enter record into SQL if contraints pass
-                for record in results:
-                    try:
-                        cursor.execute(insert_query, record)
-                        connection.commit()
-                    except Exception as e:
-                        pass
-
+                cursor.executemany(insert_query, results)
+                connection.commit()
+            
             print(cursor.rowcount, f"Record inserted successfully from {csv_file_name} file")
 
         except Exception as e:
