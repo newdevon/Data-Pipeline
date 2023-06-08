@@ -58,7 +58,7 @@ def save():
     df.to_csv (r'raw-csv-files\grades.csv', index = False)
 
     sql_query = pd.read_sql_query('''
-                              SELECT * FROM class
+                              SELECT * FROM course
                               '''
                               ,conn) 
 
@@ -66,6 +66,34 @@ def save():
     df.to_csv (r'raw-csv-files\course.csv', index = False)
 
     return render_template('files_saved.html')
+
+#@app.route('/load/', methods=['GET', 'POST'])
+#def loading():
+
+#    student = pd.read_csv(r'instance\student.csv')
+#    student = student.drop (['index'], axis = 1)
+#    teacher = pd.read_csv(r'instance\teacher.csv')
+#    teacher = teacher.drop (['index'], axis = 1)
+#    admin = pd.read_csv(r'instance\admin.csv')
+#    admin = admin.drop (['index'], axis = 1)
+#    course = pd.read_csv(r'instance\course.csv')
+#    course = course.drop (['index'], axis = 1)
+#    grade = pd.read_csv(r'instance\grade.csv')
+#    grade = grade.drop (['index'], axis = 1)
+
+#    dfs = {
+#        "student": student,
+#        "teacher": teacher,
+#        "administrator": admin,
+#        "course": course,
+#        "grade": grade
+#    }
+
+#    with sq.connect('instance/school_management.db') as imp_db:
+#        for table_name, df in dfs.items():
+#            df.to_sql(table_name, imp_db, if_exists="replace")
+
+#    return render_template('upload_success.html')
 
 #STUDENTS
 
@@ -269,13 +297,13 @@ def render_add_grade_form():
 def add_grade():
     num_val = request.form['num_val']
     student_id = request.form['student_id']
-    class_id = request.form['class_id']
+    course_id = request.form['course_id']
 
     grade = Grade(
         
         num_val=num_val,
         student_id=student_id,
-        class_id=class_id
+        course_id=course_id
     )
     db.session.add(grade)
     db.session.commit()
@@ -317,31 +345,31 @@ def delete_grade():
 
 #selection page
 @app.route('/courses')
-def classs():
+def courses():
     return render_template('courses.html')
 
 #Add
 @app.route('/courses/add', methods=['GET', 'POST'])
-def render_add_class_form():
+def render_add_course_form():
     if request.method == 'POST':
-        return add_class()
+        return add_course()
     else:
         return render_template('add_course.html')
 
 @app.route('/courses/added', methods=['POST'])
-def add_class():
+def add_course():
 
     teacher_id = request.form['teacher_id']
-    class_name = request.form['class_name']
-    class_subject = request.form['class_subject']
+    course_name = request.form['course_name']
+    course_subject = request.form['course_subject']
 
-    add_class = Class(
+    add_course = Course(
         
         teacher_id=teacher_id,
-        class_name=class_name,
-        class_subject=class_subject
+        course_name=course_name,
+        course_subject=course_subject
     )
-    db.session.add(add_class)
+    db.session.add(add_course)
     db.session.commit()
 
     success_message = request.form.get('success_message')
@@ -366,16 +394,17 @@ def delete_class():
     class_id = request.form.get('course_id')
 
     # Retrieve the class from the database
-    del_class = Class.query.get(class_id)
-    if not del_class:
+    del_course = Course.query.get(class_id)
+    if not del_course:
         return app.redirect(url_for('delete_class_error'))
 
     # Delete the class from the database
-    db.session.delete(del_class)
+    db.session.delete(del_course)
     db.session.commit()
 
     success_message = request.form.get('success_message')
     return render_template('course_deleted.html', success_message=success_message)
+
 with app.app_context():
     db.create_all()
 
