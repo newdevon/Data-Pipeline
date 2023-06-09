@@ -51,7 +51,7 @@ class Grade(db.Model):
     grade_id = db.Column(db.Integer, primary_key=True)
     num_val = db.Column(db.Integer)
     student_id = db.Column(db.Integer, db.ForeignKey("student.student_id"))
-    class_id = db.Column(db.Integer, db.ForeignKey("class.class_id"))
+    course_id = db.Column(db.Integer, db.ForeignKey("course.course_id"))
 
     def create(self):
         db.session.add(self)
@@ -66,12 +66,12 @@ class Grade(db.Model):
     def get_id(self):
         return str(self.grade_id)
 
-class Class(db.Model):
-    __tablename__ = "class"
-    class_id = db.Column(db.Integer, primary_key=True)
+class Course(db.Model):
+    __tablename__ = "course"
+    course_id = db.Column(db.Integer, primary_key=True)
     teacher_id = db.Column(db.Integer, db.ForeignKey("teacher.teacher_id"))
-    class_name = db.Column(db.String(50))
-    class_subject = db.Column(db.String(50))
+    course_name = db.Column(db.String(50))
+    subject = db.Column(db.String(50))
 
     def create(self):
       db.session.add(self)
@@ -80,15 +80,15 @@ class Class(db.Model):
     
     def to_dict(self):
       return {
-        'class name' : self.class_name,
-        'class subject': self.class_subject,
+        'course name' : self.course_name,
+        'course subject': self.subject,
       }
     
     def get_id(self):
-        return str(self.class_id)
+        return str(self.id)
     
 class Administrator(db.Model):
-    __tablename__ = "administrator"
+    __tablename__ = "admin"
     admin_id = db.Column(db.Integer, primary_key=True)
     admin_name = db.Column(db.String(50))
     admin_email = db.Column(db.String(50))

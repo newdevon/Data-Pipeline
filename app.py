@@ -42,7 +42,7 @@ def save():
     df.to_csv (r'raw-csv-files\teacher.csv', index = False)
 
     sql_query = pd.read_sql_query('''
-                              SELECT * FROM administrator
+                              SELECT * FROM admin
                               '''
                               ,conn) 
 
@@ -55,7 +55,7 @@ def save():
                               ,conn) 
 
     df = pd.DataFrame(sql_query)
-    df.to_csv (r'raw-csv-files\grades.csv', index = False)
+    df.to_csv (r'raw-csv-files\grade.csv', index = False)
 
     sql_query = pd.read_sql_query('''
                               SELECT * FROM course
@@ -367,7 +367,7 @@ def add_course():
         
         teacher_id=teacher_id,
         course_name=course_name,
-        course_subject=course_subject
+        subject=course_subject
     )
     db.session.add(add_course)
     db.session.commit()
@@ -377,26 +377,26 @@ def add_course():
 
 #Delete
 @app.route('/courses/delete', methods=['GET', 'POST'])
-def render_delete_class_form():
+def render_delete_course_form():
     if request.method == 'POST':
-        return delete_class()
+        return delete_course()
     else:
         return render_template('delete_course.html')
     
 @app.route('/courses/delete/failed')
-def delete_class_error():
+def delete_course_error():
     return render_template('course_deletion_failed.html')
     
 
 @app.route('/courses/deleted', methods=['DELETE', 'POST'])
-def delete_class():
+def delete_course():
     # Retrieve the class ID from the request data
-    class_id = request.form.get('course_id')
+    id = request.form.get('id')
 
     # Retrieve the class from the database
-    del_course = Course.query.get(class_id)
+    del_course = Course.query.get(id)
     if not del_course:
-        return app.redirect(url_for('delete_class_error'))
+        return app.redirect(url_for('delete_course_error'))
 
     # Delete the class from the database
     db.session.delete(del_course)
